@@ -1,2 +1,2 @@
 # svids
-Intrusion Detection System - An application of HMMs for intrusion detection, created for 
+Intrusion Detection System - An application of HMMs for intrusion detection, created for a purpose.
