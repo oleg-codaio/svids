@@ -34,12 +34,17 @@ def main(args):
             #    + ((" " + call[0][1][1:-1]) if call[0][1] else ""))
             calls.append(call)
         
-    # TODO: at this point, calls contains a list of all the valid system calls
+    # At this point, calls contains a list of all the valid system calls
     # with their respective first arguments.
-    print calls
-    # Split up the array of calls into (syscall, arg) tuples (the first space)
 
-    # Update our model at each syscall based on the argument, if there is one
+    # Split up the array of calls into (syscall, arg) tuples (the first space)
+    syscalls = []
+    for i in calls:
+        splitstring = re.split('[\(,]',i[0])
+        syscalls.append((splitstring[0],splitstring[1],))
+    print syscalls
+    # TODO:Update our model at each syscall based on the argument,
+    # if there is one
 
 def readModel(output):
     contents = output.read()
