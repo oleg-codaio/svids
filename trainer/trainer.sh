@@ -45,7 +45,8 @@ while read line; do
     # The remaining lines contain the arguments with which we want to invoke
     # update_model.py.
     else
-        strace -o "$strace_tmp" "$file_dir/$program" > /dev/null 2>&1
+        args="$line"
+        strace -o "$strace_tmp" "$file_dir/$program" "$args" > /dev/null 2>&1
         $UPDATE_MODEL "$strace_tmp" "$output_dir/$output"
         rm "$strace_tmp"
     fi
