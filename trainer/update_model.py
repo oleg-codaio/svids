@@ -6,6 +6,7 @@
 
 import argparse
 import json
+import os
 import re
 
 # This regex captures the name of the syscall as well as the first string
@@ -169,11 +170,14 @@ def main(args):
                             for y in range(len(model['transitionmatrix'][int(fromstate)])):
                                 if (y != int(statenum)):
                                     model['transitionmatrix'][int(fromstate)][y] -= initsmooth2
-    args.output.seek(0)
-    json.dump(model,args.output,sort_keys=True,indent=4,separators=(',',': '))
-    args.output.truncate()
+
+    outputName = args.output.name
     args.output.close()
-                        
+    os.remove(outputName)
+    with open(outputName, 'w') as file:
+        json.dump(model, file, sort_keys=True, indent=4, \
+            separators=(',',': '))
+
 def readModel(output):
     contents = output.read()
     if not contents:
