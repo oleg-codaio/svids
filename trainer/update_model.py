@@ -49,7 +49,7 @@ def main(args):
     for i in calls:
         splitstring = re.split('[\(,]',i[0])
         syscalls.append((splitstring[0],splitstring[1],))
-    print syscalls
+    # DEBUG: print syscalls
     # Update our model at each syscall based on the argument, if there is one
     for s in syscalls:
         callname = s[0]
@@ -59,9 +59,9 @@ def main(args):
         # transitionmatrix, emissions, and initprob of each syscall in a JSON object
         if (callname == 'open'):
             # Initialize an nxn matrix  TODO: Clean up n's?
+            emissionstates = re.split('/',callarg[1:])
             n = len(emissionstates)
             emptymatrix = [[0]*n]*n
-            emissionstates = re.split('/',callarg[1:])
             # If our given HMM is empty, we need to initialize and populate it
             if (model == {}):
                 model = {'transitionmatrix':emptymatrix, 'emissions':dict(), 'initprob':dict()}
@@ -137,10 +137,10 @@ def main(args):
                             model['transitionmatrix'][r].append(ADD_SMOOTH)
                             # If this is the new column, set uniformly distributed probabilities
                             if ((r+1) == len(model['transitionmatrix'])):
-                                for s in range(len(model['transitionmatrix'][0]) - 1):
-                                    model['transitionmatrix'][r][s] += uniformprob
+                                for s in range(len(model['transitionmatrix'][r]) - 1):
+                                    model['transitionmatrix'][r][s] = uniformprob
                             else:
-                                for c in range(len(model['transitionmatrix'][0]) - 1):
+                                for c in range(len(model['transitionmatrix'][r]) - 1):
                                     model['transitionmatrix'][r][c] -= uniformprob
                     else: # If we have seen the emission before
                         # statenum is the (most probable) state associated with this emission.
@@ -151,7 +151,7 @@ def main(args):
                         if (i == 0):
                             model['initprob'][statenum] += SUB_SMOOTH
                             # and lower all others
-                            for (n in keylist):
+                            for n in keylist:
                                 if (n != statenum):
                                     model['initprob'][k] -= initsmooth
                         else:
@@ -166,10 +166,13 @@ def main(args):
                                 if (emissionstates[i-1] == model['emissions'][z]):
                                     fromstate = z
                             model['transitionmatrix'][int(fromstate)][int(statenum)] += ADD_SMOOTH
-                            for y in range(len(model['transitionmatrix'][int(fromstate)]])):
+                            for y in range(len(model['transitionmatrix'][int(fromstate)])):
                                 if (y != int(statenum)):
                                     model['transitionmatrix'][int(fromstate)][y] -= initsmooth2
-    json.dumps(model)
+    args.output.seek(0)
+    json.dump(model,args.output,sort_keys=True,indent=4,separators=(',',': '))
+    args.output.truncate()
+    args.output.close()
                         
 def readModel(output):
     contents = output.read()
