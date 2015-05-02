@@ -45,7 +45,20 @@ void handleQuota(char* accountNo) {
 
     printf("Looking up account details for %d...\n", acNo);
 
-    // TODO(oleg): implement the rest of the example.
+    // TODO(oleg): implement the rest of the example. Essentially, this tool
+    // would attempt to access the admin directory - if not accessed within the
+    // last few hours, to retrieve some specific configuration. It would then
+    // access the appropriate configuration file in a user-specific directory.
+
+    // Note that there is a pretty obvious buffer overflow vulnerability in this
+    // program. Even with such automatic defenses as stack canaries, address
+    // space layout randomization, and data execution prevention, there are ways
+    // of exploiting this program in order to gain access to the admin
+    // directory; e.g., via a shell.
+
+    // In theory, such access would involve an abnormal access to specific user
+    // or administrator directories, and svIDS would be able to detect such an
+    // intrusion and terminate this example tool.
 }
 
 int main(int argc, char** argv) {
