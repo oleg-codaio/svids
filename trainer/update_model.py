@@ -48,8 +48,8 @@ def main(args):
     # Split up the array of calls into (syscall, arg) tuples (the first space)
     syscalls = []
     for i in calls:
-        splitstring = re.split('[\(,]',i[0])
-        syscalls.append((splitstring[0],splitstring[1],))
+        splitstring = re.split('[\(,]', i[0])
+        syscalls.append((splitstring[0], splitstring[1],))
     # DEBUG: print syscalls
     # Update our model at each syscall based on the argument, if there is one
     for s in syscalls:
@@ -60,14 +60,18 @@ def main(args):
         # transitionmatrix, emissions, and initprob of each syscall in a JSON object
         if (callname == 'open'):
             # Initialize an nxn matrix  TODO: Clean up n's?
-            emissionstates = re.split('/',callarg[1:])
+            emissionstates = re.split('/', callarg[1:])
             n = len(emissionstates)
-            emptymatrix = [[0]*n]*n
+            emptymatrix = [[0] * n] * n
             # If our given HMM is empty, we need to initialize and populate it
             if (model == {}):
-                model = {'transitionmatrix':emptymatrix, 'emissions':dict(), 'initprob':dict()}
+                model = {\
+                    'transitionmatrix': emptymatrix, \
+                    'emissions': dict(), \
+                    'initprob': dict() \
+                }
                 # Loop through the observed emissions
-                initsmooth = (ADD_SMOOTH / (len(emissionstates)-1))
+                initsmooth = (ADD_SMOOTH / (len(emissionstates) - 1))
                 for i in range(len(emissionstates)):
                     # set initial probabilities
                     if (i == 0):
@@ -85,8 +89,8 @@ def main(args):
                             # Matrix is nxn, so initsmooth can still be used
                             model['transitionmatrix'][i][j] = initsmooth
             else: # our HMM is not empty
-                initsmooth = (SUB_SMOOTH / (len(model['emissions'])-1))
-                initsmooth2 = (ADD_SMOOTH / (len(model['emissions'])-1))
+                initsmooth = (SUB_SMOOTH / (len(model['emissions']) - 1))
+                initsmooth2 = (ADD_SMOOTH / (len(model['emissions']) - 1))
                 # Loop through our observed emissions
                 for i in range(len(emissionstates)):
                     seenemission = False
